@@ -2,10 +2,8 @@
 import https from "https";
 
 function fetchWeather(
-    callback: (error: Error | null, weatherData?: any) => void
-) {
+    callback: (error: Error | null, weatherData?: any) => void){
     console.log("Fetching weather data...");
-
     const url =
         "https://api.open-meteo.com/v1/forecast?latitude=-29.8587&longitude=30.9945&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
 
@@ -39,8 +37,7 @@ function fetchWeather(
 }
 
 function fetchNews(
-    callback: (error: Error | null, newsData?: any) => void
-) {
+    callback: (error: Error | null, newsData?: any) => void){
     console.log("Fetching news...");
 
     const url = "https://dummyjson.com/posts";
@@ -55,9 +52,7 @@ function fetchNews(
         response.on("end", () => {
             try {
                 const result = JSON.parse(data);
-
                 const newsData = result.posts.slice(0, 5);
-
                 callback(null, newsData);
 
             } catch (error) {
@@ -95,7 +90,6 @@ function displayResults(
     }, 1000);
 }
 
-
 fetchWeather((error, weatherData) => {
 
     if (error) {
@@ -113,26 +107,16 @@ fetchWeather((error, weatherData) => {
             }
 
             if (newsData) {
-
                 displayResults(weatherData, newsData, (error, status) => {
 
                     if (error) {
                         console.error("Error displaying results:", error.message);
                         return;
                     }
-
                     if (status) {
                         console.log("All operations completed");
                         console.log("Final status:", status);
-                    }
-
-                });
-
-            }
-
-        });
-
-    }
-
-});
+                    }});
+            }});
+    }});
 
