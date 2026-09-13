@@ -1,55 +1,138 @@
 
-function fetchUserId(callback:(error: Error | null, userId?: string) => void){
-    console.log("Fetching user ID...");
+import https from "https";
+
+function fetchWeather(
+    callback: (error: Error | null, weatherData?: any) => void
+) {
+    console.log("Fetching weather data...");
+
+    const url =
+        "https://api.open-meteo.com/v1/forecast?latitude=-29.8587&longitude=30.9945&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
+
+    https.get(url, (response) => {
+        let data = "";
+
+        response.on("data", (chunk) => {
+            data += chunk;
+        });
+
+        response.on("end", () => {
+            try {
+                const result = JSON.parse(data);
+
+                const weatherData = {
+                    temperature: result.current.temperature_2m,
+                    humidity: result.current.relative_humidity_2m,
+                    windSpeed: result.current.wind_speed_10m
+                };
+
+                callback(null, weatherData);
+
+            } catch (error) {
+                callback(error as Error);
+            }
+        });
+
+    }).on("error", (error) => {
+        callback(error);
+    });
+}
+
+function fetchNews(
+    callback: (error: Error | null, newsData?: any) => void
+) {
+    console.log("Fetching news...");
+
+    const url = "https://dummyjson.com/posts";
+
+    https.get(url, (response) => {
+        let data = "";
+
+        response.on("data", (chunk) => {
+            data += chunk;
+        });
+
+        response.on("end", () => {
+            try {
+                const result = JSON.parse(data);
+
+                const newsData = result.posts.slice(0, 5);
+
+                callback(null, newsData);
+
+            } catch (error) {
+                callback(error as Error);
+            }
+        });
+
+    }).on("error", (error) => {
+        callback(error);
+    });
+}
+
+function displayResults(
+    weatherData: any,
+    newsData: any,
+    callback: (error: Error | null, status?: string) => void
+) {
+    console.log("Displaying results...");
+
     setTimeout(() => {
-         const userId = "user";
-        callback(null, userId);
-    }, 2000);
+
+        console.log("\nWeather:");
+        console.log(`Temperature: ${weatherData.temperature}°C`);
+        console.log(`Humidity: ${weatherData.humidity}%`);
+        console.log(`Wind Speed: ${weatherData.windSpeed} km/h`);
+
+        console.log("\nLatest News:");
+
+        newsData.forEach((news: any, index: number) => {
+            console.log(`${index + 1}. ${news.title}`);
+        });
+
+        callback(null, "Successfully displayed weather and news");
+
+    }, 1000);
 }
 
 
-function fetchUserData(userId: string, callback: (error: Error | null, userData?: { name: string; email: string }) => void){
-    console.log(`Fetching data for user ID: ${userId}`);
-    setTimeout(() => {
-        const userData = { name: "John Doe", email: "Shape@njbh.com" };
-        callback(null,userData);
-    }, 3000);
-}
+fetchWeather((error, weatherData) => {
 
-function savedUserLog(userName:string, userEmail:string, callback:(error:Error | null, logStatus?:string) => void){
-    console.log(`Saving log for $(userName") with $(userEmail)`);
-    setTimeout(()=> {
-        const status = "succesfully"
-        callback(null , status)
-    }, 3000)
-}
-
-fetchUserId((error, userId) => {
-    if (error){
-        console.error(`Error in fetching user id` , error.message);
+    if (error) {
+        console.error("Error fetching weather:", error.message);
         return;
     }
-    if (userId){
-        fetchUserData(userId, (error , userData) =>{
-            if (error){
-                console.error("Error in fetching user details", error.message);
+
+    if (weatherData) {
+
+        fetchNews((error, newsData) => {
+
+            if (error) {
+                console.error("Error fetching news:", error.message);
                 return;
             }
-            if(userData){
-                savedUserLog(userData.email, userData.name,(error,logStatus) =>{
-                    if(error){
-                        console.error("Error is user details", error.message);
+
+            if (newsData) {
+
+                displayResults(weatherData, newsData, (error, status) => {
+
+                    if (error) {
+                        console.error("Error displaying results:", error.message);
                         return;
                     }
-                    if(logStatus){
-                        console.log("All operations completed ")
-                        console.log("Final status", logStatus);
+
+                    if (status) {
+                        console.log("All operations completed");
+                        console.log("Final status:", status);
                     }
-                })
+
+                });
 
             }
 
-        })
+        });
+
     }
-})
+
+});
 
