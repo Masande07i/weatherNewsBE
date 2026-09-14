@@ -54,7 +54,7 @@ function fetchNews(): Promise<any> {
 }
 
 
-//weather-news
+//weather->news
 
 console.log("\nPROMISE CHAINING");
 
@@ -75,29 +75,29 @@ fetchWeather()
         console.error("\nError:", error.message);
     });
 
+
+
 // promise all
     console.log("\nPROMISE.ALL()");
 
 
 Promise.all([fetchWeather(), fetchNews()])
     .then(([weather, news]) => {
-
         console.log("\nBoth requests completed!");
 
         console.log("\nWeather:");
         console.log(`Temperature: ${weather.temperature}°C`);
         console.log(`Wind speed: ${weather.windspeed} km/h`);
-
         console.log("\nLatest News:");
-
         news.posts.slice(0, 5).forEach((post: any, index: number) => {
             console.log(`${index + 1}. ${post.title}`);
         });
-
     })
     .catch((error) => {
         console.error("\nPromise.all Error:", error.message);
     });
+
+
 
 //promisse race
 console.log("\nPROMISE.RACE()");
@@ -111,9 +111,7 @@ Promise.race([
         console.log(result);
     })
     .catch((error) => {
-
         console.error("\nPromise.race Error:", error.message);
-
     });
 
 
