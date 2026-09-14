@@ -18,8 +18,7 @@ function fetchWeather(
                 const weatherData = {
                     temperature: result.current.temperature_2m,
                     humidity: result.current.relative_humidity_2m,
-                    windSpeed: result.current.wind_speed_10m
-                };
+                    windSpeed: result.current.wind_speed_10m };
                 callback(null, weatherData);
             } catch (error) {
                 callback(error as Error);
