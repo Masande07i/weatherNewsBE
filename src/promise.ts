@@ -8,19 +8,13 @@ function promiseFetchWeather(): Promise<any> {
 
         const url =
             "https://api.open-meteo.com/v1/forecast?latitude=-29.8587&longitude=30.9945&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
-
         https.get(url, (response) => {
-
             let data = "";
-
             response.on("data", (chunk) => {
                 data += chunk;
             });
-
             response.on("end", () => {
-
                 try {
-
                     const result = JSON.parse(data);
 
                     const weatherData = {
@@ -34,9 +28,7 @@ function promiseFetchWeather(): Promise<any> {
                 } catch (error) {
 
                     reject(error);
-
                 }
-
             });
 
         }).on("error", (error) => {
