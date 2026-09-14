@@ -25,3 +25,25 @@ function fetchWeather(): Promise<any> {
     });
 }
 
+function fetchNews(): Promise<any> {
+    console.log("Fetching news...");
+    return new Promise((resolve, reject) => {
+        const url = "https://dummyjson.com/posts";
+        https.get(url, (response) => {
+            let data = "";
+            response.on("data", (chunk) => {
+                data += chunk;
+            });
+            response.on("end", () => {
+                try {
+                    const result = JSON.parse(data);
+                    resolve(result);
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }).on("error", (error) => {
+            reject(error);
+        });
+    });
+}
