@@ -1,13 +1,10 @@
-
 import https from "https";
 
 function fetchWeather(): Promise<any> {
     console.log("Fetching weather data...");
     return new Promise((resolve, reject) => {
-
         const url =
             "https://api.open-meteo.com/v1/forecast?latitude=-29.8587&longitude=31.0218&current_weather=true";
-
         https.get(url, (response) => {
             let data = "";
             response.on("data", (chunk) => {
@@ -21,11 +18,9 @@ function fetchWeather(): Promise<any> {
                     reject(error);
                 }
             });
-
         }).on("error", (error) => {
             reject(error);
         });
-
     });
 }
 
@@ -100,6 +95,7 @@ Promise.all([fetchWeather(), fetchNews()])
 
 
 //promisse race
+
 console.log("\nPROMISE.RACE()");
 
 Promise.race([
@@ -113,6 +109,5 @@ Promise.race([
     .catch((error) => {
         console.error("\nPromise.race Error:", error.message);
     });
-
 
 

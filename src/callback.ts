@@ -1,4 +1,3 @@
-
 import https from "https";
 
 function fetchWeather(
