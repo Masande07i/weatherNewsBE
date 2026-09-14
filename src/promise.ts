@@ -1,34 +1,37 @@
+
 import https from "https";
 
-function promiseFetchWeather(): Promise<any> {
+function fetchWeather(): Promise<any> {
 
     console.log("Fetching weather data...");
 
     return new Promise((resolve, reject) => {
 
         const url =
-            "https://api.open-meteo.com/v1/forecast?latitude=-29.8587&longitude=30.9945&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
+            "https://api.open-meteo.com/v1/forecast?latitude=-29.8587&longitude=31.0218&current_weather=true";
+
         https.get(url, (response) => {
+
             let data = "";
+
             response.on("data", (chunk) => {
                 data += chunk;
             });
+
             response.on("end", () => {
+
                 try {
+
                     const result = JSON.parse(data);
 
-                    const weatherData = {
-                        temperature: result.current.temperature_2m,
-                        humidity: result.current.relative_humidity_2m,
-                        windSpeed: result.current.wind_speed_10m
-                    };
-
-                    resolve(weatherData);
+                    resolve(result.current_weather);
 
                 } catch (error) {
 
                     reject(error);
+
                 }
+
             });
 
         }).on("error", (error) => {
@@ -39,7 +42,7 @@ function promiseFetchWeather(): Promise<any> {
 }
 
 
-function promiseFetchNews(): Promise<any> {
+function fetchNews(): Promise<any> {
 
     console.log("Fetching news...");
 
@@ -61,9 +64,7 @@ function promiseFetchNews(): Promise<any> {
 
                     const result = JSON.parse(data);
 
-                    const newsData = result.posts.slice(0, 5);
-
-                    resolve(newsData);
+                    resolve(result);
 
                 } catch (error) {
 
@@ -81,52 +82,35 @@ function promiseFetchNews(): Promise<any> {
 }
 
 
-function displayResults(weatherData: any, newsData: any): Promise<string> {
+//weather-news
 
-    console.log("Displaying results...");
+console.log("\n==============================");
+console.log("PROMISE CHAINING");
+console.log("==============================");
 
-    return new Promise((resolve) => {
+fetchWeather()
+    .then((weather) => {
 
-        setTimeout(() => {
+        console.log("\nWeather:");
+        console.log(`Temperature: ${weather.temperature}°C`);
+        console.log(`Wind speed: ${weather.windspeed} km/h`);
 
-            console.log("\nWeather:");
-            console.log(`Temperature: ${weatherData.temperature}°C`);
-            console.log(`Humidity: ${weatherData.humidity}%`);
-            console.log(`Wind Speed: ${weatherData.windSpeed} km/h`);
-
-            console.log("\nLatest News:");
-
-            newsData.forEach((news: any, index: number) => {
-                console.log(`${index + 1}. ${news.title}`);
-            });
-
-            resolve("Successfully displayed weather and news");
-
-        }, 1000);
-
-    });
-}
-
-
-promiseFetchWeather()
-    .then((weatherData) => {
-
-        return promiseFetchNews().then((newsData) => {
-            return displayResults(weatherData, newsData);
-        });
+        return fetchNews();
 
     })
-    .then((status) => {
+    .then((news) => {
 
-        console.log("\nAll operations completed successfully");
-        console.log("Final status:", status);
+        console.log("\nLatest News:");
+
+        news.posts.slice(0, 5).forEach((post: any, index: number) => {
+            console.log(`${index + 1}. ${post.title}`);
+        });
 
     })
     .catch((error) => {
 
-        console.error(
-            "An error occurred in the promise chain:",
-            error.message
-        );
+        console.error("\nError:", error.message);
 
     });
+
+
