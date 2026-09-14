@@ -9,23 +9,18 @@ function fetchWeather(
 
     https.get(url, (response) => {
         let data = "";
-
         response.on("data", (chunk) => {
             data += chunk;
         });
-
         response.on("end", () => {
             try {
                 const result = JSON.parse(data);
-
                 const weatherData = {
                     temperature: result.current.temperature_2m,
                     humidity: result.current.relative_humidity_2m,
                     windSpeed: result.current.wind_speed_10m
                 };
-
                 callback(null, weatherData);
-
             } catch (error) {
                 callback(error as Error);
             }
@@ -41,25 +36,20 @@ function fetchNews(
     console.log("Fetching news...");
 
     const url = "https://dummyjson.com/posts";
-
     https.get(url, (response) => {
         let data = "";
-
         response.on("data", (chunk) => {
             data += chunk;
         });
-
         response.on("end", () => {
             try {
                 const result = JSON.parse(data);
                 const newsData = result.posts.slice(0, 5);
                 callback(null, newsData);
-
             } catch (error) {
                 callback(error as Error);
             }
         });
-
     }).on("error", (error) => {
         callback(error);
     });
@@ -71,7 +61,6 @@ function displayResults(
     callback: (error: Error | null, status?: string) => void
 ) {
     console.log("Displaying results...");
-
     setTimeout(() => {
 
         console.log("\nWeather:");
@@ -80,35 +69,26 @@ function displayResults(
         console.log(`Wind Speed: ${weatherData.windSpeed} km/h`);
 
         console.log("\nLatest News:");
-
         newsData.forEach((news: any, index: number) => {
             console.log(`${index + 1}. ${news.title}`);
         });
-
         callback(null, "Successfully displayed weather and news");
-
     }, 1000);
 }
 
 fetchWeather((error, weatherData) => {
-
     if (error) {
         console.error("Error fetching weather:", error.message);
         return;
     }
-
     if (weatherData) {
-
         fetchNews((error, newsData) => {
-
             if (error) {
                 console.error("Error fetching news:", error.message);
                 return;
             }
-
             if (newsData) {
                 displayResults(weatherData, newsData, (error, status) => {
-
                     if (error) {
                         console.error("Error displaying results:", error.message);
                         return;
