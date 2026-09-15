@@ -104,6 +104,8 @@ Promise.race([
 ])
     .then((result) => {
         console.log("\nFastest response:");
+
+
         console.log(result);
     })
     .catch((error) => {
