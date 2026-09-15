@@ -1,10 +1,13 @@
 import https from "https";
+import type { WeatherData, NewsData } from "./types.js"
 
 function fetchWeather(
-    callback: (error: Error | null, weatherData?: any) => void){
+    callback: (error: Error | null, weatherData?: WeatherData) => void
+) {
     console.log("Fetching weather data...");
+
     const url =
-        "https://api.open-meteo.com/v1/forecast?latitude=-29.8587&longitude=30.9945&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
+        "https://api.open-meteo.com/v1/forecast?latitude=-29.8587&longitude=31.0218&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
 
     https.get(url, (response) => {
         let data = "";
@@ -14,25 +17,25 @@ function fetchWeather(
         response.on("end", () => {
             try {
                 const result = JSON.parse(data);
-                const weatherData = {
+                const weatherData: WeatherData = {
                     temperature: result.current.temperature_2m,
                     humidity: result.current.relative_humidity_2m,
-                    windSpeed: result.current.wind_speed_10m };
+                    windSpeed: result.current.wind_speed_10m
+                };
                 callback(null, weatherData);
             } catch (error) {
                 callback(error as Error);
             }
         });
-
     }).on("error", (error) => {
         callback(error);
     });
 }
 
 function fetchNews(
-    callback: (error: Error | null, newsData?: any) => void){
+    callback: (error: Error | null, newsData?: NewsData[]) => void
+) {
     console.log("Fetching news...");
-
     const url = "https://dummyjson.com/posts";
     https.get(url, (response) => {
         let data = "";
@@ -42,7 +45,7 @@ function fetchNews(
         response.on("end", () => {
             try {
                 const result = JSON.parse(data);
-                const newsData = result.posts.slice(0, 5);
+                const newsData: NewsData[] = result.posts.slice(0, 5);
                 callback(null, newsData);
             } catch (error) {
                 callback(error as Error);
@@ -54,20 +57,18 @@ function fetchNews(
 }
 
 function displayResults(
-    weatherData: any,
-    newsData: any,
+    weatherData: WeatherData,
+    newsData: NewsData[],
     callback: (error: Error | null, status?: string) => void
 ) {
     console.log("Displaying results...");
     setTimeout(() => {
-
         console.log("\nWeather:");
         console.log(`Temperature: ${weatherData.temperature}°C`);
         console.log(`Humidity: ${weatherData.humidity}%`);
         console.log(`Wind Speed: ${weatherData.windSpeed} km/h`);
-
         console.log("\nLatest News:");
-        newsData.forEach((news: any, index: number) => {
+        newsData.forEach((news, index) => {
             console.log(`${index + 1}. ${news.title}`);
         });
         callback(null, "Successfully displayed weather and news");

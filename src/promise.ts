@@ -106,6 +106,7 @@ Promise.race([
         console.log("\nFastest response:");
 
 
+
         console.log(result);
     })
     .catch((error) => {
