@@ -47,3 +47,40 @@ function fetchNews(): Promise<any> {
         });
     });
 }
+
+async function processWeatherAndNews(): Promise<void> {
+
+    try {
+
+        console.log("Starting async process...");
+
+        const weather = await fetchWeather();
+
+        console.log("\nWeather:");
+        console.log(`Temperature: ${weather.temperature}°C`);
+        console.log(`Wind speed: ${weather.windspeed} km/h`);
+
+        const news = await fetchNews();
+
+        console.log("\nLatest News:");
+
+        news.posts.slice(0, 5).forEach((post: any, index: number) => {
+            console.log(`${index + 1}. ${post.title}`);
+        });
+
+        console.log("\nAll operations completed successfully");
+
+    } catch (error: any) {
+
+        console.error(
+            "An error occurred in this process:",
+            error.message
+        );
+
+    }
+}
+
+
+processWeatherAndNews();
+
+
