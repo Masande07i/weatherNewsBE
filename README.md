@@ -64,7 +64,8 @@ Latest News:
 All operations completed
 Final status: Successfully displayed weather and news```
 
-Promise
+```Promise```
+
 PROMISE CHAINING
 Fetching weather data...
 
@@ -100,7 +101,8 @@ Latest News:
 4. All he wanted was a candy bar.
 5. Hopes and dreams were dashed that day.
 
-Async/Await
+```Async/Await```
+
 Starting async process...
 Fetching weather data...
 
